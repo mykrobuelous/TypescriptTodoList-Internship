@@ -18,12 +18,9 @@ const TodoList: React.FC<Props> = ({ todos, dispatch }) => {
 				{(provided) => (
 					<div className="todos" ref={provided.innerRef} {...provided.droppableProps}>
 						<span className="todos__heading">Active Task</span>
-						{notCompletedTodos
-							.slice()
-							.reverse()
-							.map((todo, index) => {
-								return <SingleTodo index={index} key={todo.id} todo={todo} dispatch={dispatch} />;
-							})}
+						{notCompletedTodos.map((todo, index) => {
+							return <SingleTodo index={index} key={todo.id} todo={todo} dispatch={dispatch} />;
+						})}
 						{provided.placeholder}
 					</div>
 				)}
@@ -32,12 +29,9 @@ const TodoList: React.FC<Props> = ({ todos, dispatch }) => {
 				{(provided) => (
 					<div className="todos remove" ref={provided.innerRef} {...provided.droppableProps}>
 						<span className="todos__heading">Completed Task</span>
-						{completedTodos
-							.slice()
-							.reverse()
-							.map((todo, index) => {
-								return <SingleTodo key={todo.id} index={index} todo={todo} dispatch={dispatch} />;
-							})}
+						{completedTodos.map((todo, index) => {
+							return <SingleTodo key={todo.id} index={index} todo={todo} dispatch={dispatch} />;
+						})}
 						{provided.placeholder}
 					</div>
 				)}

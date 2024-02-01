@@ -4,12 +4,14 @@ import InputField from "./components/InputField/InputField";
 import TodoList from "./components/TodoList/TodoList";
 import { TodoReducer } from "./Reducer/TodoReducer";
 import { Todo } from "./utils/model";
-import { DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 
 const App: React.FC = () => {
 	const initialState: Todo[] = [];
 	const [todos, dispatch] = useReducer(TodoReducer, initialState);
 	const [todo, setTodo] = useState<string>("");
+
+	console.log(todos);
 
 	const handleAdd = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -19,8 +21,15 @@ const App: React.FC = () => {
 		setTodo("");
 	};
 
+	const onDragEnd = (result: DropResult) => {
+		const { source, destination } = result;
+
+		if (!destination || (destination?.droppableId === source.droppableId && destination.index === source.index))
+			return;
+	};
+
 	return (
-		<DragDropContext onDragEnd={() => {}}>
+		<DragDropContext onDragEnd={onDragEnd}>
 			<div className="App">
 				<span className="heading">Taskify</span>
 				<InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
