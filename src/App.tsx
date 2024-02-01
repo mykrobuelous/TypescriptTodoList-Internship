@@ -9,9 +9,8 @@ import { DragDropContext, DropResult } from "react-beautiful-dnd";
 const App: React.FC = () => {
 	const initialState: Todo[] = [];
 	const [todos, dispatch] = useReducer(TodoReducer, initialState);
+	const [completedTodos, setCompletedTodos] = useState<Todo[]>([]);
 	const [todo, setTodo] = useState<string>("");
-
-	console.log(todos);
 
 	const handleAdd = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -22,10 +21,37 @@ const App: React.FC = () => {
 	};
 
 	const onDragEnd = (result: DropResult) => {
-		const { source, destination } = result;
+		const { destination, source } = result;
 
-		if (!destination || (destination?.droppableId === source.droppableId && destination.index === source.index))
+		if (!destination) {
 			return;
+		}
+
+		if (destination.droppableId === source.droppableId && destination.index === source.index) {
+			return;
+		}
+
+		let add;
+		const active = todos;
+		const complete = completedTodos;
+		// Source Logic
+		if (source.droppableId === "todoslist") {
+			add = active[source.index];
+			active.splice(source.index, 1);
+		} else {
+			add = complete[source.index];
+			complete.splice(source.index, 1);
+		}
+
+		// Destination Logic
+		if (destination.droppableId === "todoslist") {
+			active.splice(destination.index, 0, add);
+		} else {
+			complete.splice(destination.index, 0, add);
+		}
+
+		setCompletedTodos(complete);
+		dispatch({ type: "set", payload: active });
 	};
 
 	return (
@@ -33,7 +59,7 @@ const App: React.FC = () => {
 			<div className="App">
 				<span className="heading">Taskify</span>
 				<InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
-				<TodoList todos={todos} dispatch={dispatch} />
+				<TodoList todos={{ completedTodos, notCompletedTodos: todos }} dispatch={dispatch} />
 			</div>
 		</DragDropContext>
 	);

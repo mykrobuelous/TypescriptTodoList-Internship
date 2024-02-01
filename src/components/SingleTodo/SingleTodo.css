@@ -24,6 +24,9 @@
 	font-size: 25px;
 	cursor: pointer;
 }
+.drag {
+	box-shadow: 0 0 20px black;
+}
 
 @media (max-width: 1100px) {
 	.todos__single {
